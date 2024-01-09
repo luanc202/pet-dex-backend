@@ -5,6 +5,7 @@ import (
 	"net/http"
 
 	"pet-dex-backend/v2/entity"
+	"pet-dex-backend/v2/infra/db"
 	"pet-dex-backend/v2/usecase"
 )
 
@@ -16,13 +17,16 @@ func NewHttpHandler(onguse usecase.OngUseCase) {
 
 func CreateOng(w http.ResponseWriter, r *http.Request) {
 	var ong entity.Ong
+
+	usecase := usecase.NewOngUseCase(db.NewOngRepository())
+
 	err := json.NewDecoder(r.Body).Decode(&ong)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusBadRequest)
 		return
 	}
 
-	println(ong.CNPJ)
+	usecase.Save(ong)
 
 	w.WriteHeader(http.StatusCreated)
 }
