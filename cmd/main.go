@@ -1,13 +1,24 @@
 package main
 
 import (
-	"pet-dex-backend/v2/infra/db"
-	"pet-dex-backend/v2/usecase"
+	"database/sql"
+	"fmt"
+	"net/http"
+
+	"pet-dex-backend/v2/api/routes"
 )
 
 func main() {
-	pr := db.NewPetRepository()
-	adoptUseCase := usecase.NewAdoptUseCase(pr)
-
-	adoptUseCase.Do()
+	dbc, err := sql.Open("mysql", "root:root@tcp")
+	if err != nil {
+		panic(err)
+	}
+	defer dbc.Close()
+	// or := db.NewOngRepository()
+	port := "3000"
+	srv := &http.Server{
+		Addr:    fmt.Sprintf(":%s", port),
+		Handler: routes.Routes(),
+	}
+	srv.ListenAndServe()
 }
