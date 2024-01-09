@@ -9,7 +9,7 @@ import (
 func Routes() *chi.Mux {
 	router := chi.NewRouter()
 
-	router.Post("/api/ongs", controllers.HandleCreateOng)
+	router.Post("/api/ongs", controllers.CreateOng)
 
 	return router
 }
